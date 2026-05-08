@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZAAN & BROTHERS — Distribution ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.2.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div class="lw" id="lw">
+  <div class="lcard">
+    <div class="l-logo">
+      <div class="l-icon"><i class="ti ti-building-store" style="font-size:26px;color:var(--ac)"></i></div>
+      <div class="l-brand">AZAAN & BROTHERS</div>
+      <div class="l-sub">Distribution ERP v2.0</div>
+    </div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">Welcome Back</div>
+    <div style="font-size:12px;color:var(--tx2);margin-bottom:20px">Login to access the system</div>
+    <div class="lf"><label>Username</label><input type="text" id="lu" value="admin" placeholder="Enter username"></div>
+    <div class="lf"><label>Password</label><input type="password" id="lp" value="1234" placeholder="Enter password"></div>
+    <button class="l-btn" onclick="doLogin()"><i class="ti ti-login" style="margin-right:4px"></i>Login to System</button>
+    <div class="l-err" id="lerr">Galat username ya password. Dobara try karo.</div>
+    <div class="l-hint"><b style="color:var(--tx);display:block;margin-bottom:5px">Demo Accounts:</b>
+      admin / 1234 → Super Admin<br>manager / 5678 → Manager<br>accountant / 0000 → Accountant<br>salesman / 9999 → Salesman
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div class="app" id="app">
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-logo"><div class="sb-name">AZAAN & BROTHERS</div><div class="sb-sub">Distribution ERP v2</div></div>
+  <div class="ns">Main</div>
+  <div class="ni active" onclick="go('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+  <div class="ni" onclick="go('sales',this)"><i class="ti ti-receipt"></i> Sales / Invoice</div>
+  <div class="ni" onclick="go('purchase',this)"><i class="ti ti-shopping-cart"></i> Purchase</div>
+  <div class="ni" onclick="go('inventory',this)"><i class="ti ti-packages"></i> Inventory / Stock</div>
+  <div class="ns">CRM</div>
+  <div class="ni" onclick="go('customers',this)"><i class="ti ti-users"></i> Customers</div>
+  <div class="ni" onclick="go('suppliers',this)"><i class="ti ti-truck"></i> Suppliers</div>
+  <div class="ni" onclick="go('salesmen',this)"><i class="ti ti-user-star"></i> Salesmen</div>
+  <div class="ns">Finance</div>
+  <div class="ni" onclick="go('accounts',this)"><i class="ti ti-cash"></i> Accounts</div>
+  <div class="ni" onclick="go('recovery',this)"><i class="ti ti-arrows-exchange"></i> Recovery</div>
+  <div class="ni" onclick="go('expenses',this)"><i class="ti ti-receipt-off"></i> Expenses</div>
+  <div class="ni" onclick="go('salary',this)"><i class="ti ti-wallet"></i> Salary & HR</div>
+  <div class="ni" onclick="go('ledger',this)"><i class="ti ti-book"></i> Ledger / Cashbook</div>
+  <div class="ns">Analytics</div>
+  <div class="ni" onclick="go('reports',this)"><i class="ti ti-chart-bar"></i> Reports</div>
+  <div class="ns">System</div>
+  <div class="ni" onclick="go('roles',this)"><i class="ti ti-shield-lock"></i> User Roles</div>
+  <div class="sb-foot">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <div class="av" id="sbav">AD</div>
+      <div><div style="font-size:12px;color:#fff;font-weight:600" id="sbname">Admin</div><div style="font-size:9px;color:rgba(255,255,255,.4)" id="sbrole">Super Admin</div></div>
+    </div>
+    <button onclick="doLogout()" style="width:100%;padding:6px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:7px;color:rgba(255,255,255,.65);font-size:11.5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600"><i class="ti ti-logout"></i> Logout</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title" id="ptitle">Dashboard</div>
+    <span class="tb-date" id="pdate"></span>
+    <div class="tb-r">
+      <div class="ib ndot"><i class="ti ti-bell" style="font-size:13px"></i></div>
+      <div class="ib"><i class="ti ti-search" style="font-size:13px"></i></div>
+      <div class="ib" onclick="doLogout()" title="Logout"><i class="ti ti-logout" style="font-size:13px"></i></div>
+    </div>
+  </div>
+  <div class="cnt">
+
+  <!-- ========== DASHBOARD ========== -->
+  <div class="page active" id="page-dashboard">
+    <div class="qbar">
+      <button class="qbtn" onclick="go('sales',ni('sales'));openSale()"><i class="ti ti-plus"></i> New Invoice</button>
+      <button class="qbtn" onclick="go('purchase',ni('purchase'));openPurch()"><i class="ti ti-shopping-cart"></i> New Purchase</button>
+      <button class="qbtn" onclick="go('inventory',ni('inventory'));document.getElementById('m-addprod').classList.add('open')"><i class="ti ti-packages"></i> Add Product</button>
+      <button class="qbtn" onclick="go('expenses',ni('expenses'));document.getElementById('m-exp').classList.add('open')"><i class="ti ti-receipt-off"></i> Add Expense</button>
+      <button class="qbtn" onclick="go('accounts',ni('accounts'))"><i class="ti ti-cash"></i> Cash Voucher</button>
+      <button class="qbtn" onclick="go('reports',ni('reports'))"><i class="ti ti-chart-bar"></i> Reports</button>
+    </div>
+    <div class="sg">
+      <div class="sc s-a"><div class="scl"><i class="ti ti-receipt" style="color:var(--ac2)"></i>Today's Sales</div><div class="scv">2,47,500</div><div class="scs" style="color:var(--ac2)">↑ 12.4% vs yesterday</div></div>
+      <div class="sc s-b"><div class="scl"><i class="ti ti-shopping-cart" style="color:var(--bl)"></i>Purchase</div><div class="scv">1,18,200</div><div class="scs" style="color:var(--bl)">↑ 5.1%</div></div>
+      <div class="sc s-c"><div class="scl"><i class="ti ti-receipt-off" style="color:var(--am)"></i>Expenses</div><div class="scv">24,800</div><div class="scs">7 entries today</div></div>
+      <div class="sc s-d"><div class="scl"><i class="ti ti-clock-dollar" style="color:var(--rd)"></i>Pending Recovery</div><div class="scv">8,32,000</div><div class="scs">14 parties</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:12px;margin-bottom:14px">
+      <div class="card">
+        <div class="ch"><span class="ct">Recent Invoices</span><button class="btn bp bsm" onclick="go('sales',ni('sales'));openSale()"><i class="ti ti-plus"></i> New Invoice</button></div>
+        <table class="dt"><thead><tr><th>Invoice #</th><th>Customer</th><th>Salesman</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mono" style="font-size:10.5px;color:var(--ac)">INV-0892</span></td><td>Hajj Medical Store</td><td>ARMAAN</td><td class="mono">32,400</td><td><span class="badge bg-s">Posted</span></td><td><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></td></tr>
+          <tr><td><span class="mono" style="font-size:10.5px;color:var(--ac)">INV-0891</span></td><td>City Pharma</td><td>IRFAN</td><td class="mono">18,750</td><td><span class="badge bg-w">Pending</span></td><td><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></td></tr>
+          <tr><td><span class="mono" style="font-size:10.5px;color:var(--ac)">INV-0890</span></td><td>Khan General Store</td><td>MUMTAZ</td><td class="mono">44,100</td><td><span class="badge bg-s">Posted</span></td><td><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></td></tr>
+          <tr><td><span class="mono" style="font-size:10.5px;color:var(--ac)">INV-0889</span></td><td>Raza Traders</td><td>RAFIQUE</td><td class="mono">9,200</td><td><span class="badge bg-d">Returned</span></td><td><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></td></tr>
+          <tr><td><span class="mono" style="font-size:10.5px;color:var(--ac)">INV-0888</span></td><td>Al-Falah Dist.</td><td>ARMAAN</td><td class="mono">67,500</td><td><span class="badge bg-i">Draft</span></td><td><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></td></tr>
+        </tbody></table>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card"><div class="ch"><span class="ct">Stock Alerts</span><span class="badge bg-d">7 Items</span></div>
+          <table class="dt"><thead><tr><th>Product</th><th>Stock</th><th>Status</th></tr></thead><tbody>
+            <tr><td>Ariel Surf 500g</td><td class="mono">12 Ctn</td><td><span class="sk sk-lo">Low</span></td></tr>
+            <tr><td>Sunsilk 200ml</td><td class="mono">0</td><td><span class="sk sk-out">Out</span></td></tr>
+            <tr><td>Dettol Soap 75g</td><td class="mono">5 Ctn</td><td><span class="sk sk-lo">Low</span></td></tr>
+          </tbody></table>
+        </div>
+        <div class="card"><div class="ch"><span class="ct">Today Expenses</span></div>
+          <div class="cb" style="padding:10px">
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Transport / Fuel</span><span class="mono" style="font-size:11px;color:var(--rd)">3,500</span></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Electricity Bill</span><span class="mono" style="font-size:11px;color:var(--rd)">8,200</span></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="font-size:12px">Salary Advance</span><span class="mono" style="font-size:11px;color:var(--rd)">12,000</span></div>
+            <div style="text-align:right;margin-top:6px;padding-top:6px;border-top:1px solid var(--bdr);font-size:11px;font-weight:700;color:var(--rd)" class="mono">Total: 24,800</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SALES / INVOICE ========== -->
+  <div class="page" id="page-sales">
+    <div class="qbar">
+      <button class="btn bp" onclick="openSale()"><i class="ti ti-plus"></i> New Invoice</button>
+      <button class="btn bo" onclick="go('sales',ni('sales'))"><i class="ti ti-list"></i> Invoice List</button>
+      <button class="btn bo" onclick="showPrint()"><i class="ti ti-printer"></i> Print Last Invoice</button>
+    </div>
+    <!-- INVOICE FORM -->
+    <div id="sale-form">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div><div style="font-size:14px;font-weight:700">New Sales Invoice</div><div style="font-size:11px;color:var(--tx2)">Products add karo, save karo, post karo</div></div>
+      <div style="display:flex;align-items:center;gap:7px"><span class="invb" id="inv-no">INV-0893</span><button class="btn bo bsm"><i class="ti ti-chevron-left"></i></button><button class="btn bo bsm"><i class="ti ti-chevron-right"></i></button></div>
+    </div>
+    <div class="sl2">
+      <div>
+        <div class="card" style="margin-bottom:10px"><div class="cb">
+          <div class="fg">
+            <div class="f"><label>Date</label><input type="date" value="2026-05-07" id="s-date"></div>
+            <div class="f"><label>Salesman</label><select id="s-sm"><option>ARMAAN</option><option>MUMTAZ ABBASI</option><option>IRFAN</option><option>RAFIQUE</option></select></div>
+            <div class="f"><label>Customer Code</label><input type="text" id="s-ccode" value="C-05"></div>
+            <div class="f"><label>Customer Name</label><input type="text" id="s-cname" value="Hajj Medical Store"></div>
+            <div class="f"><label>Transport</label><select id="s-trans"><option>Own Vehicle</option><option>Rent</option><option>Supplier</option></select></div>
+            <div class="f"><label>Bilty #</label><input type="text" id="s-bilty" placeholder="Bilty no"></div>
+            <div class="f"><label>Order No</label><input type="text" id="s-ordno" placeholder="Order ref"></div>
+            <div class="f"><label>Freight (PKR)</label><div style="display:flex;gap:5px"><input type="number" id="s-freight" value="500" style="flex:1"><select style="width:55px" id="s-ftype"><option>Add</option><option>Less</option></select></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;margin-top:4px">
+            <span style="font-size:9.5px;color:var(--tx2);font-weight:700;text-transform:uppercase;letter-spacing:.6px">Customer Type:</span>
+            <span class="badge bg-s" style="cursor:pointer" onclick="this.className='badge bg-s';this.nextElementSibling.className='badge'">Non-Gift Customer</span>
+            <span class="badge" style="cursor:pointer;background:var(--sur2);color:var(--tx2)" onclick="this.className='badge bg-w';this.previousElementSibling.className='badge'">Gift Customer</span>
+          </div>
+        </div></div>
+        <div class="card" style="margin-bottom:10px">
+          <div class="ch"><span class="ct">Products — Sale / Return / Damage</span>
+            <div style="display:flex;gap:5px">
+              <span class="badge bg-i">Sale</span><span class="badge bg-w">Return</span><span class="badge bg-d">Damage</span>
+            </div>
+          </div>
+          <div class="cb">
+            <div class="ptw"><table class="pt" id="sale-tbl">
+              <thead>
+                <tr>
+                  <th style="width:22px">#</th><th>Code</th><th class="lft" style="min-width:130px">Product Name</th>
+                  <th colspan="3" style="border-left:2px solid rgba(255,255,255,.2);background:rgba(40,122,85,.8)">SALE QTY</th>
+                  <th colspan="3" style="border-left:2px solid rgba(255,255,255,.15);background:rgba(181,58,42,.7)">RETURN</th>
+                  <th style="border-left:2px solid rgba(255,255,255,.2)">Price</th>
+                  <th>Gross</th><th>Disc%</th><th>Free Pc</th><th style="width:24px"></th>
+                </tr>
+                <tr style="background:rgba(0,0,0,.15);font-size:9px">
+                  <th></th><th></th><th></th>
+                  <th>Ctn</th><th>Dzn</th><th style="border-left:1px solid rgba(255,255,255,.15)">Pc</th>
+                  <th style="border-left:2px solid rgba(255,255,255,.15)">Ctn</th><th>Dzn</th><th style="border-left:1px solid rgba(255,255,255,.1)">Pc</th>
+                  <th></th><th></th><th></th><th></th><th></th>
+                </tr>
+              </thead>
+              <tbody id="sale-rows">
+                <tr><td class="rn">1</td><td><input type="text" value="PRD-041" style="width:58px" oninput="calcRow(this)"></td><td class="lft"><input type="text" value="Ariel Surf 500g"></td><td><input type="number" value="10" min="0" oninput="calcRow(this)"></td><td><input type="number" value="0" min="0"></td><td><input type="number" value="0" min="0"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="1850" oninput="calcRow(this)"></td><td><input type="number" id="gr-1" value="18500" readonly style="color:var(--bl);font-weight:600"></td><td><input type="number" value="2"></td><td><input type="number" value="0"></td><td><button class="dlb" onclick="this.closest('tr').remove();calcTotal()"><i class="ti ti-trash" style="font-size:11px"></i></button></td></tr>
+                <tr><td class="rn">2</td><td><input type="text" value="PRD-087" style="width:58px" oninput="calcRow(this)"></td><td class="lft"><input type="text" value="Sunsilk Shampoo 200ml"></td><td><input type="number" value="5" min="0" oninput="calcRow(this)"></td><td><input type="number" value="0" min="0"></td><td><input type="number" value="6" min="0"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="950" oninput="calcRow(this)"></td><td><input type="number" id="gr-2" value="5270" readonly style="color:var(--bl);font-weight:600"></td><td><input type="number" value="0"></td><td><input type="number" value="1"></td><td><button class="dlb" onclick="this.closest('tr').remove();calcTotal()"><i class="ti ti-trash" style="font-size:11px"></i></button></td></tr>
+              </tbody>
+            </table></div>
+            <button class="arb" onclick="addSaleRow()"><i class="ti ti-plus" style="font-size:12px"></i> Add Product Row</button>
+          </div>
+        </div>
+        <div class="card"><div class="cb">
+          <div class="fg3">
+            <div class="f"><label>Gross Total</label><input type="text" id="s-gross" value="23,770" readonly class="mono" style="font-weight:700;color:var(--ac)"></div>
+            <div class="f"><label>Total Discount</label><input type="text" id="s-disc" value="370" readonly class="mono" style="color:var(--rd)"></div>
+            <div class="f"><label>Extra Discount</label><input type="number" id="s-exdisc" value="0" placeholder="0"></div>
+            <div class="f"><label>T.Offer Value</label><input type="number" id="s-offer" value="0" placeholder="0" readonly></div>
+            <div class="f"><label>Free Pics Value</label><input type="text" id="s-free" value="950" readonly class="mono"></div>
+            <div class="f"><label>Cash Discount</label><input type="number" id="s-cdisc" value="0" placeholder="0"></div>
+          </div>
+        </div></div>
+        <div class="ab">
+          <button class="btn br" onclick="if(confirm('Invoice cancel karo?')){}"><i class="ti ti-x"></i> Cancel</button>
+          <button class="btn bo"><i class="ti ti-device-floppy"></i> Save Order</button>
+          <div class="sp"></div>
+          <button class="btn bo bsm" onclick="showPrint('small')"><i class="ti ti-printer"></i> Small Print</button>
+          <button class="btn bo bsm" onclick="showPrint('medium')"><i class="ti ti-printer"></i> Medium Print</button>
+          <button class="btn bo bsm" onclick="showPrint('large')"><i class="ti ti-printer"></i> Large Print</button>
+          <button class="btn bp" onclick="postInvoice()"><i class="ti ti-send"></i> Post Invoice</button>
+        </div>
+      </div>
+      <!-- RIGHT PANEL -->
+      <div class="sp2">
+        <div class="pbb"><div class="lb">Previous Balance</div><div class="am2">32,000</div></div>
+        <div class="card"><div class="ch"><span class="ct">Invoice Summary</span></div><div class="cb">
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Gross Amount</span><span class="mono" style="font-size:12px;font-weight:600" id="sum-gross">23,770</span></div>
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Discount</span><span class="mono" style="font-size:12px;color:var(--rd)">−370</span></div>
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Freight</span><span class="mono" style="font-size:12px">+500</span></div>
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Extra Discount</span><span class="mono" style="font-size:12px;color:var(--rd)">−0</span></div>
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Cash Discount</span><span class="mono" style="font-size:12px;color:var(--rd)">−0</span></div>
+          <div class="stot"><span>Invoice Total</span><span id="sum-total">23,900</span></div>
+        </div></div>
+        <div class="nab"><div class="lb">Net Amount Due</div><div class="am2" id="sum-net">55,900</div></div>
+        <div class="card"><div class="ch"><span class="ct">Item Stock</span></div><div class="cb" style="padding:8px 12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:11.5px">Ariel Surf 500g</span><span class="sk sk-lo">12 Ctn</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0"><span style="font-size:11.5px">Sunsilk 200ml</span><span class="sk sk-out">0 Ctn</span></div>
+        </div></div>
+      </div>
+    </div>
+    </div><!-- /sale-form -->
+
+    <!-- INVOICE LIST (shown after post) -->
+    <div id="sale-list" style="display:none">
+      <div class="card">
+        <div class="ch"><span class="ct">All Invoices</span><button class="btn bp bsm" onclick="openSale()"><i class="ti ti-plus"></i> New Invoice</button></div>
+        <table class="dt"><thead><tr><th>Invoice #</th><th>Date</th><th>Customer</th><th>Salesman</th><th>Gross</th><th>Net Amt</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td class="mono" style="color:var(--ac)">INV-0893</td><td>07 May 26</td><td>Hajj Medical Store</td><td>ARMAAN</td><td class="mono">23,770</td><td class="mono">23,900</td><td><span class="badge bg-s">Posted</span></td><td style="display:flex;gap:4px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+          <tr><td class="mono" style="color:var(--ac)">INV-0892</td><td>07 May 26</td><td>City Pharma</td><td>IRFAN</td><td class="mono">18,750</td><td class="mono">19,250</td><td><span class="badge bg-w">Pending</span></td><td style="display:flex;gap:4px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PURCHASE ========== -->
+  <div class="page" id="page-purchase">
+    <div class="qbar">
+      <button class="btn bp" onclick="openPurch()"><i class="ti ti-plus"></i> New Purchase</button>
+      <button class="btn bo" onclick="document.getElementById('purch-form').style.display='none';document.getElementById('purch-list').style.display='block'"><i class="ti ti-list"></i> Purchase List</button>
+    </div>
+    <div id="purch-form">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div><div style="font-size:14px;font-weight:700">New Purchase Invoice</div><div style="font-size:11px;color:var(--tx2)">Supplier se maal khareedo</div></div>
+      <div style="display:flex;gap:7px"><span style="background:var(--bl);color:#fff;padding:3px 9px;border-radius:6px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700">PUR-262</span><button class="btn bo bsm"><i class="ti ti-chevron-left"></i></button><button class="btn bo bsm"><i class="ti ti-chevron-right"></i></button></div>
+    </div>
+    <div class="sl2">
+      <div>
+        <div class="card" style="margin-bottom:10px"><div class="cb">
+          <div class="fg">
+            <div class="f"><label>Date</label><input type="date" value="2026-05-07"></div>
+            <div class="f"><label>Bill No</label><input type="number" value="262"></div>
+            <div class="f"><label>Supplier Name</label><select><option>Counter Sale</option><option>Unilever Pakistan</option><option>P&G Pakistan</option><option>Reckitt Benckiser</option><option>Colgate Palmolive</option></select></div>
+            <div class="f"><label>Company</label><input type="text" value="Counter Sale"></div>
+            <div class="f"><label>Com Code</label><input type="text" placeholder="Company code"></div>
+            <div class="f"><label>Transport</label><select><option>Own Vehicle</option><option>Supplier Vehicle</option><option>Third Party</option></select></div>
+            <div class="f"><label>Bilty #</label><input type="text" placeholder="Bilty number"></div>
+            <div class="f"><label>Order No</label><input type="text" placeholder="Order ref"></div>
+            <div class="f"><label>Extra Freight</label><input type="number" value="0"></div>
+            <div class="f"><label>Freight Type</label><select><option>Add</option><option>Less</option></select></div>
+          </div>
+        </div></div>
+        <div class="card" style="margin-bottom:10px">
+          <div class="ch"><span class="ct">Purchase Items</span><button class="btn bo bsm"><i class="ti ti-file-import"></i> Import from Order</button></div>
+          <div class="cb">
+            <div class="ptw"><table class="pt">
+              <thead><tr><th style="width:22px">#</th><th>Code</th><th class="lft" style="min-width:140px">Product Name</th><th>Qty Ctn</th><th>Dzn</th><th>Pc</th><th>Price</th><th>GTotal</th><th>Disc%</th><th>Disc Amt</th><th>TOffCtn</th><th>Free</th><th>Per</th><th></th></tr></thead>
+              <tbody id="purch-rows">
+                <tr><td class="rn">1</td><td><input type="text" value="PRD-041" style="width:58px"></td><td class="lft"><input type="text" value="Ariel Surf 500g"></td><td><input type="number" value="50"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="1750"></td><td><input type="number" value="87500" readonly style="color:var(--bl);font-weight:600"></td><td><input type="number" value="3"></td><td><input type="number" value="2625" readonly style="color:var(--rd)"></td><td><input type="number" value="0"></td><td><input type="number" value="2"></td><td><input type="number" value="0"></td><td><button class="dlb" onclick="this.closest('tr').remove()"><i class="ti ti-trash" style="font-size:11px"></i></button></td></tr>
+                <tr><td class="rn">2</td><td><input type="text" value="PRD-023" style="width:58px"></td><td class="lft"><input type="text" value="Dettol Soap 75g"></td><td><input type="number" value="30"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="850"></td><td><input type="number" value="25500" readonly style="color:var(--bl);font-weight:600"></td><td><input type="number" value="2"></td><td><input type="number" value="510" readonly style="color:var(--rd)"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><button class="dlb" onclick="this.closest('tr').remove()"><i class="ti ti-trash" style="font-size:11px"></i></button></td></tr>
+              </tbody>
+            </table></div>
+            <button class="arb" onclick="addPurchRow()"><i class="ti ti-plus" style="font-size:12px"></i> Add Item</button>
+          </div>
+        </div>
+        <div class="card"><div class="cb"><div class="fg3">
+          <div class="f"><label>Gross Total</label><input type="text" value="1,13,000" readonly class="mono" style="font-weight:700;color:var(--ac)"></div>
+          <div class="f"><label>Total Discount</label><input type="text" value="3,135" readonly class="mono" style="color:var(--rd)"></div>
+          <div class="f"><label>Extra Freight</label><input type="number" value="0"></div>
+          <div class="f"><label>Total Tax</label><input type="text" value="0" readonly class="mono"></div>
+          <div class="f"><label>Net Total</label><input type="text" value="1,09,865" readonly class="mono" style="font-weight:700;color:var(--bl)"></div>
+          <div class="f"><label>Pending Order</label><input type="text" value="0" readonly class="mono"></div>
+        </div></div></div>
+        <div class="ab">
+          <button class="btn br"><i class="ti ti-x"></i> Cancel</button>
+          <button class="btn bo"><i class="ti ti-device-floppy"></i> Save Order</button>
+          <button class="btn bo"><i class="ti ti-eye"></i> View</button>
+          <div class="sp"></div>
+          <button class="btn bo bsm" onclick="showPurchPrint()"><i class="ti ti-printer"></i> Print</button>
+          <button class="btn bp" onclick="showPurchPrint()"><i class="ti ti-send"></i> Post Purchase</button>
+        </div>
+      </div>
+      <div class="sp2">
+        <div class="nab"><div class="lb">Supplier Prev Balance</div><div class="am2">2,45,000</div></div>
+        <div class="card"><div class="ch"><span class="ct">Purchase Summary</span></div><div class="cb">
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Gross</span><span class="mono" style="font-size:12px;font-weight:600">1,13,000</span></div>
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Discount</span><span class="mono" style="font-size:12px;color:var(--rd)">−3,135</span></div>
+          <div class="sr"><span style="font-size:12px;color:var(--tx2)">Extra Freight</span><span class="mono" style="font-size:12px">+0</span></div>
+          <div class="stot"><span>Net Total</span><span>1,09,865</span></div>
+        </div></div>
+        <div class="card"><div class="ch"><span class="ct">Pending Orders</span></div><div class="cb" style="padding:8px 12px">
+          <div style="padding:7px 0;border-bottom:1px solid var(--bdr)"><div style="font-size:12px;font-weight:600">Unilever — ORD-088</div><div style="font-size:10.5px;color:var(--tx3)">45 items · 07 May</div></div>
+          <div style="padding:7px 0"><div style="font-size:12px;font-weight:600">P&G — ORD-089</div><div style="font-size:10.5px;color:var(--tx3)">22 items · 06 May</div></div>
+        </div></div>
+      </div>
+    </div>
+    </div><!-- /purch-form -->
+    <div id="purch-list" style="display:none">
+      <div class="card"><div class="ch"><span class="ct">All Purchases</span><button class="btn bp bsm" onclick="openPurch()"><i class="ti ti-plus"></i> New Purchase</button></div>
+        <table class="dt"><thead><tr><th>Bill #</th><th>Date</th><th>Supplier</th><th>Items</th><th>Gross</th><th>Discount</th><th>Net Total</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td class="mono" style="color:var(--bl)">PUR-261</td><td>07 May</td><td>Unilever</td><td>2</td><td class="mono">1,13,000</td><td class="mono" style="color:var(--rd)">3,135</td><td class="mono" style="font-weight:700">1,09,865</td><td><span class="badge bg-s">Posted</span></td><td style="display:flex;gap:4px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bo bsm" onclick="showPurchPrint()"><i class="ti ti-printer"></i></button></td></tr>
+          <tr><td class="mono" style="color:var(--bl)">PUR-260</td><td>05 May</td><td>P&G Pakistan</td><td>4</td><td class="mono">84,500</td><td class="mono" style="color:var(--rd)">1,690</td><td class="mono" style="font-weight:700">82,810</td><td><span class="badge bg-s">Posted</span></td><td style="display:flex;gap:4px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bo bsm" onclick="showPurchPrint()"><i class="ti ti-printer"></i></button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== INVENTORY ========== -->
+  <div class="page" id="page-inventory">
+    <div class="qbar">
+      <button class="btn bp" onclick="document.getElementById('m-addprod').classList.add('open')"><i class="ti ti-plus"></i> Add New Product</button>
+      <button class="btn bo"><i class="ti ti-file-import"></i> Import Products</button>
+      <button class="btn bo"><i class="ti ti-file-export"></i> Export List</button>
+    </div>
+    <div class="sg"><div class="sc s-a"><div class="scl">Total Products</div><div class="scv">248</div></div><div class="sc s-b"><div class="scl">Stock Value</div><div class="scv">34.2L</div></div><div class="sc s-c"><div class="scl">Low Stock</div><div class="scv">7</div></div><div class="sc s-d"><div class="scl">Out of Stock</div><div class="scv">3</div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Product Stock List</span>
+      <div style="display:flex;gap:7px"><input type="text" placeholder="Search product..." style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;width:170px;outline:none"><select style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px"><option>All Categories</option><option>Detergent</option><option>Hair Care</option><option>Soap</option><option>Food</option></select></div>
+    </div>
+    <table class="dt"><thead><tr><th>Code</th><th>Product Name</th><th>Category</th><th>Company</th><th class="c">Ctn</th><th class="c">Dzn</th><th class="c">Pc</th><th>Sale Price</th><th>Purchase Price</th><th>Min Level</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr><td class="mono" style="font-size:10.5px">PRD-001</td><td>Surf Excel 1kg</td><td>Detergent</td><td>Unilever</td><td class="mono c">85</td><td class="mono c">0</td><td class="mono c">0</td><td class="mono">2,200</td><td class="mono">1,900</td><td>20</td><td><span class="sk sk-ok">Good</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="editProd('PRD-001','Surf Excel 1kg')"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+      <tr><td class="mono" style="font-size:10.5px">PRD-041</td><td>Ariel Surf 500g</td><td>Detergent</td><td>P&G</td><td class="mono c">12</td><td class="mono c">0</td><td class="mono c">0</td><td class="mono">1,950</td><td class="mono">1,750</td><td>20</td><td><span class="sk sk-lo">Low</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="editProd('PRD-041','Ariel Surf 500g')"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+      <tr><td class="mono" style="font-size:10.5px">PRD-087</td><td>Sunsilk Shampoo 200ml</td><td>Hair Care</td><td>Unilever</td><td class="mono c">0</td><td class="mono c">0</td><td class="mono c">0</td><td class="mono">1,050</td><td class="mono">950</td><td>15</td><td><span class="sk sk-out">Out</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="editProd('PRD-087','Sunsilk Shampoo')"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+      <tr><td class="mono" style="font-size:10.5px">PRD-023</td><td>Dettol Soap 75g</td><td>Soap</td><td>Reckitt</td><td class="mono c">5</td><td class="mono c">3</td><td class="mono c">0</td><td class="mono">950</td><td class="mono">850</td><td>10</td><td><span class="sk sk-lo">Low</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="editProd('PRD-023','Dettol Soap')"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+      <tr><td class="mono" style="font-size:10.5px">PRD-055</td><td>Head & Shoulders 400ml</td><td>Hair Care</td><td>P&G</td><td class="mono c">42</td><td class="mono c">0</td><td class="mono c">6</td><td class="mono">1,850</td><td class="mono">1,650</td><td>10</td><td><span class="sk sk-ok">Good</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="editProd('PRD-055','H&S 400ml')"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== CUSTOMERS ========== -->
+  <div class="page" id="page-customers">
+    <div class="qbar"><button class="btn bp" onclick="document.getElementById('m-addcust').classList.add('open')"><i class="ti ti-plus"></i> Add Customer</button><button class="btn bo"><i class="ti ti-file-export"></i> Export</button></div>
+    <div class="sg"><div class="sc s-a"><div class="scl">Total Customers</div><div class="scv">134</div></div><div class="sc s-c"><div class="scl">Total Receivable</div><div class="scv">18.4L</div></div><div class="sc s-d"><div class="scl">Overdue 30+ Days</div><div class="scv">22</div></div><div class="sc s-b"><div class="scl">Active This Month</div><div class="scv">89</div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Customer List</span><input type="text" placeholder="Search customer..." style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;width:190px;outline:none"></div>
+    <table class="dt"><thead><tr><th>Code</th><th>Customer Name</th><th>Contact</th><th>Area</th><th>Salesman</th><th>Balance</th><th>Last Sale</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      <tr><td>C-01</td><td><b>Hajj Medical Store</b></td><td>0300-1234567</td><td>Hyderabad</td><td>ARMAAN</td><td class="mono" style="color:var(--rd)">32,400</td><td>07 May</td><td><span class="badge bg-s">Active</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bb bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-book"></i></button><button class="btn bo bsm" onclick="editCust()"><i class="ti ti-edit"></i></button></td></tr>
+      <tr><td>C-02</td><td><b>City Pharma</b></td><td>0311-9876543</td><td>Hyderabad</td><td>IRFAN</td><td class="mono" style="color:var(--rd)">18,750</td><td>06 May</td><td><span class="badge bg-s">Active</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bb bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-book"></i></button><button class="btn bo bsm" onclick="editCust()"><i class="ti ti-edit"></i></button></td></tr>
+      <tr><td>C-03</td><td><b>Khan General Store</b></td><td>0321-5554433</td><td>Latifabad</td><td>MUMTAZ</td><td class="mono" style="color:var(--tx2)">0</td><td>05 May</td><td><span class="badge bg-s">Clear</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bb bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-book"></i></button><button class="btn bo bsm" onclick="editCust()"><i class="ti ti-edit"></i></button></td></tr>
+      <tr><td>C-04</td><td><b>Raza Traders</b></td><td>0333-1122334</td><td>Qasimabad</td><td>RAFIQUE</td><td class="mono" style="color:var(--rd)">72,000</td><td>01 May</td><td><span class="badge bg-d">Overdue</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-eye"></i></button><button class="btn bb bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-book"></i></button><button class="btn bo bsm" onclick="editCust()"><i class="ti ti-edit"></i></button></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== SUPPLIERS ========== -->
+  <div class="page" id="page-suppliers">
+    <div class="qbar"><button class="btn bp" onclick="document.getElementById('m-addsup').classList.add('open')"><i class="ti ti-plus"></i> Add Supplier</button></div>
+    <div class="sg"><div class="sc s-a"><div class="scl">Total Suppliers</div><div class="scv">28</div></div><div class="sc s-c"><div class="scl">Total Payable</div><div class="scv">42.1L</div></div><div class="sc s-d"><div class="scl">Overdue Bills</div><div class="scv">6</div></div><div class="sc s-b"><div class="scl">This Month</div><div class="scv">11.8L</div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Supplier List</span></div>
+    <table class="dt"><thead><tr><th>Code</th><th>Supplier Name</th><th>Contact</th><th>Balance</th><th>Last Purchase</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      <tr><td>S-01</td><td><b>Unilever Pakistan</b></td><td>021-35600000</td><td class="mono" style="color:var(--rd)">2,45,000</td><td>05 May</td><td><span class="badge bg-w">Due</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-book"></i></button><button class="btn bp bsm" onclick="go('purchase',ni('purchase'));openPurch()"><i class="ti ti-plus"></i> New Purchase</button></td></tr>
+      <tr><td>S-02</td><td><b>P&G Pakistan</b></td><td>021-35388000</td><td class="mono" style="color:var(--rd)">1,18,500</td><td>03 May</td><td><span class="badge bg-w">Due</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-book"></i></button><button class="btn bp bsm" onclick="go('purchase',ni('purchase'));openPurch()"><i class="ti ti-plus"></i> New Purchase</button></td></tr>
+      <tr><td>S-03</td><td><b>Reckitt Benckiser</b></td><td>051-2345678</td><td class="mono" style="color:var(--tx2)">0</td><td>28 Apr</td><td><span class="badge bg-s">Clear</span></td><td style="display:flex;gap:3px"><button class="btn bo bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-book"></i></button><button class="btn bp bsm" onclick="go('purchase',ni('purchase'));openPurch()"><i class="ti ti-plus"></i> New Purchase</button></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== SALESMEN ========== -->
+  <div class="page" id="page-salesmen">
+    <div class="qbar"><button class="btn bp" onclick="document.getElementById('m-addsm').classList.add('open')"><i class="ti ti-plus"></i> Add Salesman</button></div>
+    <div class="sg"><div class="sc s-a"><div class="scl">Total Salesmen</div><div class="scv">4</div></div><div class="sc s-b"><div class="scl">Today Sales</div><div class="scv">2,47,500</div></div><div class="sc s-c"><div class="scl">Avg per Salesman</div><div class="scv">61,875</div></div><div class="sc s-d"><div class="scl">Pending Recovery</div><div class="scv">8,32,000</div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Salesman Performance</span></div>
+    <table class="dt"><thead><tr><th>Code</th><th>Salesman</th><th>Invoices</th><th>Gross Sale</th><th>Returns</th><th>Net Sale</th><th>Recovery</th><th>Actions</th></tr></thead><tbody>
+      <tr><td>SM-01</td><td><b>ARMAAN</b></td><td class="mono c">8</td><td class="mono">98,400</td><td class="mono" style="color:var(--rd)">0</td><td class="mono" style="color:var(--ac2);font-weight:700">98,400</td><td class="mono" style="color:var(--am)">2,18,000</td><td><button class="btn bo bsm" onclick="go('reports',ni('reports'))"><i class="ti ti-chart-bar"></i> Report</button></td></tr>
+      <tr><td>SM-02</td><td><b>MUMTAZ ABBASI</b></td><td class="mono c">5</td><td class="mono">74,200</td><td class="mono" style="color:var(--rd)">0</td><td class="mono" style="color:var(--ac2);font-weight:700">74,200</td><td class="mono" style="color:var(--am)">1,94,500</td><td><button class="btn bo bsm" onclick="go('reports',ni('reports'))"><i class="ti ti-chart-bar"></i> Report</button></td></tr>
+      <tr><td>SM-03</td><td><b>IRFAN</b></td><td class="mono c">6</td><td class="mono">42,150</td><td class="mono" style="color:var(--rd)">9,200</td><td class="mono" style="color:var(--ac2);font-weight:700">32,950</td><td class="mono" style="color:var(--am)">2,45,000</td><td><button class="btn bo bsm" onclick="go('reports',ni('reports'))"><i class="ti ti-chart-bar"></i> Report</button></td></tr>
+      <tr><td>SM-04</td><td><b>RAFIQUE</b></td><td class="mono c">4</td><td class="mono">41,950</td><td class="mono" style="color:var(--rd)">0</td><td class="mono" style="color:var(--ac2);font-weight:700">41,950</td><td class="mono" style="color:var(--am)">1,74,500</td><td><button class="btn bo bsm" onclick="go('reports',ni('reports'))"><i class="ti ti-chart-bar"></i> Report</button></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== ACCOUNTS — ALL OPTIONS VISIBLE ========== -->
+  <div class="page" id="page-accounts">
+    <div style="font-size:14px;font-weight:700;margin-bottom:14px">Accounts Module — Tamam Options</div>
+    <div class="acc-grid">
+      <!-- LEFT MENU -->
+      <div>
+        <div class="acc-menu">
+          <div style="padding:8px 14px;background:var(--sur2);font-size:9.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px">Vouchers</div>
+          <div class="acc-menu-item active" onclick="showAcc('crv',this)"><i class="ti ti-cash"></i> Cash Received Voucher</div>
+          <div class="acc-menu-item" onclick="showAcc('cpv',this)"><i class="ti ti-credit-card"></i> Cash Payment Voucher</div>
+          <div class="acc-menu-item" onclick="showAcc('sole',this)"><i class="ti ti-users"></i> Customer Recovery (SOLE)</div>
+          <div class="acc-menu-item" onclick="showAcc('sole2',this)"><i class="ti ti-users-group"></i> Customer Recovery (SOLE-2)</div>
+          <div class="acc-menu-item" onclick="showAcc('billwise',this)"><i class="ti ti-list"></i> Recovery Bill Wise</div>
+          <div style="padding:8px 14px;background:var(--sur2);font-size:9.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px">Books</div>
+          <div class="acc-menu-item" onclick="showAcc('cashbook',this)"><i class="ti ti-notebook"></i> Cashbook <span style="margin-left:auto;font-size:10px;color:var(--tx3)">Ctrl+B</span></div>
+          <div class="acc-menu-item" onclick="showAcc('bankbook',this)"><i class="ti ti-building-bank"></i> Bank Book <span style="margin-left:auto;font-size:10px;color:var(--tx3)">Ctrl+K</span></div>
+          <div class="acc-menu-item" onclick="showAcc('journal',this)"><i class="ti ti-refresh"></i> Journal <span style="margin-left:auto;font-size:10px;color:var(--tx3)">Ctrl+J</span></div>
+          <div class="acc-menu-item" onclick="showAcc('ledger2',this)"><i class="ti ti-book"></i> Ledger <span style="margin-left:auto;font-size:10px;color:var(--tx3)">Ctrl+L</span></div>
+          <div class="acc-menu-item" onclick="showAcc('ledger2b',this)"><i class="ti ti-books"></i> Ledger-2</div>
+          <div style="padding:8px 14px;background:var(--sur2);font-size:9.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px">Financial Statements</div>
+          <div class="acc-menu-item" onclick="showAcc('trial',this)"><i class="ti ti-scale"></i> Trial Balance <span style="margin-left:auto;font-size:10px;color:var(--tx3)">Ctrl+T</span></div>
+          <div class="acc-menu-item" onclick="showAcc('income-final',this)"><i class="ti ti-file-invoice"></i> Income Statement (Final)</div>
+          <div class="acc-menu-item" onclick="showAcc('income-gen',this)"><i class="ti ti-file-description"></i> Income Statement (General)</div>
+          <div class="acc-menu-item" onclick="showAcc('income-noexp',this)"><i class="ti ti-file-minus"></i> Inc. Stmt (without Expenses)</div>
+          <div class="acc-menu-item" onclick="showAcc('balance',this)"><i class="ti ti-building"></i> Balance Sheet</div>
+        </div>
+      </div>
+      <!-- RIGHT PANEL -->
+      <div>
+        <!-- CRV -->
+        <div class="acc-panel active" id="acc-crv">
+          <div class="card"><div class="ch"><span class="ct">Cash Received Voucher</span><span class="badge bg-s">CRV-0341</span></div><div class="cb">
+            <div class="fg3" style="margin-bottom:9px">
+              <div class="f"><label>Date</label><input type="date" value="2026-05-07"></div>
+              <div class="f"><label>Voucher #</label><input class="mono" type="text" value="CRV-0341" readonly></div>
+              <div class="f"><label>A/C Head</label><select><option>Cash</option><option>Bank MCB</option><option>Bank HBL</option></select></div>
+              <div class="f"><label>Sub A/C Head</label><select><option>Customer</option><option>Salesman</option><option>Other</option></select></div>
+              <div class="f"><label>Sub A/C Name</label><input type="text" placeholder="Customer name..."></div>
+              <div class="f"><label>Amount (PKR)</label><input type="number" class="mono" placeholder="0"></div>
+            </div>
+            <div class="f" style="margin-bottom:10px"><label>Detail / Narration</label><textarea style="padding:7px 10px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;resize:none;height:60px" placeholder="Payment detail likho..."></textarea></div>
+            <div style="display:flex;gap:6px"><button class="btn br bsm">Clear</button><div class="sp"></div><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button><button class="btn bo bsm"><i class="ti ti-eye"></i> View</button><button class="btn bo bsm"><i class="ti ti-eye-off"></i> View-2</button><button class="btn bp"><i class="ti ti-device-floppy"></i> Save Voucher</button></div>
+          </div></div>
+        </div>
+        <!-- CPV -->
+        <div class="acc-panel" id="acc-cpv">
+          <div class="card"><div class="ch"><span class="ct">Cash Payment Voucher</span><span class="badge bg-d">CPV-0218</span></div><div class="cb">
+            <div class="fg3" style="margin-bottom:9px">
+              <div class="f"><label>Date</label><input type="date" value="2026-05-07"></div>
+              <div class="f"><label>Voucher #</label><input class="mono" type="text" value="CPV-0218" readonly></div>
+              <div class="f"><label>Payment From</label><select><option>Cash</option><option>Bank MCB</option></select></div>
+              <div class="f"><label>Pay To (A/C)</label><select><option>Supplier</option><option>Expense</option><option>Other</option></select></div>
+              <div class="f"><label>Name</label><input type="text" placeholder="Party name..."></div>
+              <div class="f"><label>Amount (PKR)</label><input type="number" class="mono" placeholder="0"></div>
+            </div>
+            <div class="f" style="margin-bottom:10px"><label>Detail</label><textarea style="padding:7px 10px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;resize:none;height:55px" placeholder="Payment purpose..."></textarea></div>
+            <div style="display:flex;gap:6px"><button class="btn br bsm">Clear</button><div class="sp"></div><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button><button class="btn bp"><i class="ti ti-device-floppy"></i> Save Payment</button></div>
+          </div></div>
+        </div>
+        <!-- SOLE -->
+        <div class="acc-panel" id="acc-sole">
+          <div class="card"><div class="ch"><span class="ct">Customer Recovery — SOLE</span></div><div class="cb">
+            <div class="fg3" style="margin-bottom:9px">
+              <div class="f"><label>Date</label><input type="date" value="2026-05-07"></div>
+              <div class="f"><label>Salesman</label><select><option>ARMAAN</option><option>MUMTAZ</option><option>IRFAN</option><option>RAFIQUE</option></select></div>
+              <div class="f"><label>Customer</label><input type="text" placeholder="Customer name"></div>
+              <div class="f"><label>Amount Received</label><input type="number" class="mono" placeholder="0"></div>
+              <div class="f"><label>Payment Method</label><select><option>Cash</option><option>Cheque</option><option>Bank Transfer</option></select></div>
+              <div class="f"><label>Cheque / Ref #</label><input type="text" placeholder="Ref no (if any)"></div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:6px"><div class="sp"></div><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button><button class="btn bp"><i class="ti ti-device-floppy"></i> Save Recovery</button></div>
+          </div></div>
+        </div>
+        <!-- BILL WISE -->
+        <div class="acc-panel" id="acc-billwise">
+          <div class="card"><div class="ch"><span class="ct">Recovery — Bill Wise (Whole/Retail)</span></div><div class="cb">
+            <div class="fg" style="margin-bottom:9px">
+              <div class="f"><label>Customer</label><input type="text" placeholder="Customer name..."></div>
+              <div class="f"><label>Salesman</label><select><option>All</option><option>ARMAAN</option><option>MUMTAZ</option><option>IRFAN</option><option>RAFIQUE</option></select></div>
+            </div>
+            <div class="ptw"><table class="pt"><thead><tr><th>Date</th><th>Invoice #</th><th>Invoice Amt</th><th>Received</th><th>Balance</th><th>Now Receive</th></tr></thead>
+            <tbody>
+              <tr><td>01 Apr</td><td class="mono">INV-0801</td><td class="mono">72,000</td><td class="mono" style="color:var(--ac2)">0</td><td class="mono" style="color:var(--rd)">72,000</td><td><input type="number" placeholder="0" style="width:90px;padding:4px 7px;border:1.5px solid var(--bdr);border-radius:6px;font-size:12px;outline:none"></td></tr>
+              <tr><td>10 Apr</td><td class="mono">INV-0820</td><td class="mono">1,24,500</td><td class="mono" style="color:var(--ac2)">50,000</td><td class="mono" style="color:var(--rd)">74,500</td><td><input type="number" placeholder="0" style="width:90px;padding:4px 7px;border:1.5px solid var(--bdr);border-radius:6px;font-size:12px;outline:none"></td></tr>
+            </tbody></table></div>
+            <div style="display:flex;gap:6px;margin-top:8px"><div class="sp"></div><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button><button class="btn bp"><i class="ti ti-device-floppy"></i> Post Recovery</button></div>
+          </div></div>
+        </div>
+        <!-- CASHBOOK -->
+        <div class="acc-panel" id="acc-cashbook">
+          <div class="card"><div class="ch"><span class="ct">Cashbook</span><div style="display:flex;gap:6px"><input type="date" value="2026-05-01" style="padding:4px 8px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:11.5px;outline:none"><input type="date" value="2026-05-07" style="padding:4px 8px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:11.5px;outline:none"><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></div></div>
+          <table class="dt"><thead><tr><th>Date</th><th>Description</th><th>Ref #</th><th style="color:var(--rd)">Debit (Out)</th><th style="color:var(--ac2)">Credit (In)</th><th>Balance</th></tr></thead>
+          <tbody>
+            <tr><td>01 May</td><td>Opening Balance</td><td>—</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">—</td><td class="mono">95,000</td></tr>
+            <tr><td>02 May</td><td>Cash Sale — INV-0875</td><td class="mono" style="font-size:10.5px">INV-0875</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">18,500</td><td class="mono">1,13,500</td></tr>
+            <tr><td>03 May</td><td>Salary Advance — ARMAAN</td><td class="mono" style="font-size:10.5px">EXP-041</td><td class="mono" style="color:var(--rd)">12,000</td><td class="mono">—</td><td class="mono">1,01,500</td></tr>
+            <tr><td>05 May</td><td>Cash Received — Hajj Medical</td><td class="mono" style="font-size:10.5px">CRV-0338</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">20,000</td><td class="mono">1,21,500</td></tr>
+            <tr><td>07 May</td><td>Electricity Bill</td><td class="mono" style="font-size:10.5px">EXP-048</td><td class="mono" style="color:var(--rd)">8,200</td><td class="mono">—</td><td class="mono" style="font-weight:700">1,13,300</td></tr>
+          </tbody></table>
+          <div style="padding:9px 14px;background:var(--sur2);border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:24px">
+            <span style="font-size:12px;color:var(--tx2)">Total Out: <span class="mono" style="color:var(--rd);font-weight:700">20,200</span></span>
+            <span style="font-size:12px;color:var(--tx2)">Total In: <span class="mono" style="color:var(--ac2);font-weight:700">38,500</span></span>
+            <span style="font-size:12px;color:var(--tx2)">Cash Balance: <span class="mono" style="color:var(--ac);font-weight:700">1,13,300</span></span>
+          </div></div>
+        </div>
+        <!-- BANK BOOK -->
+        <div class="acc-panel" id="acc-bankbook">
+          <div class="card"><div class="ch"><span class="ct">Bank Book</span><div style="display:flex;gap:6px"><select style="padding:4px 8px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:11.5px"><option>MCB Bank</option><option>HBL Bank</option></select><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></div></div>
+          <table class="dt"><thead><tr><th>Date</th><th>Description</th><th>Cheque #</th><th style="color:var(--rd)">Debit</th><th style="color:var(--ac2)">Credit</th><th>Balance</th></tr></thead>
+          <tbody>
+            <tr><td>01 May</td><td>Opening Balance</td><td>—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">8,42,000</td></tr>
+            <tr><td>03 May</td><td>Customer payment — Al-Falah</td><td class="mono" style="font-size:10.5px">CHQ-1241</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">50,000</td><td class="mono">8,92,000</td></tr>
+            <tr><td>06 May</td><td>Godown Rent Payment</td><td class="mono" style="font-size:10.5px">CHQ-1242</td><td class="mono" style="color:var(--rd)">35,000</td><td class="mono">—</td><td class="mono" style="font-weight:700">8,57,000</td></tr>
+          </tbody></table></div>
+        </div>
+        <!-- TRIAL BALANCE -->
+        <div class="acc-panel" id="acc-trial">
+          <div class="card"><div class="ch"><span class="ct">Trial Balance</span><div style="display:flex;gap:6px"><input type="date" value="2026-05-07" style="padding:4px 8px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:11.5px;outline:none"><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></div></div>
+          <table class="dt"><thead><tr><th>Account</th><th>A/C Code</th><th style="color:var(--rd)">Debit (PKR)</th><th style="color:var(--ac2)">Credit (PKR)</th></tr></thead>
+          <tbody>
+            <tr><td><b>Cash in Hand</b></td><td>1001</td><td class="mono" style="color:var(--rd)">1,13,300</td><td class="mono">—</td></tr>
+            <tr><td><b>Bank — MCB</b></td><td>1002</td><td class="mono" style="color:var(--rd)">8,57,000</td><td class="mono">—</td></tr>
+            <tr><td><b>Accounts Receivable</b></td><td>1100</td><td class="mono" style="color:var(--rd)">18,40,000</td><td class="mono">—</td></tr>
+            <tr><td><b>Stock / Inventory</b></td><td>1200</td><td class="mono" style="color:var(--rd)">34,20,000</td><td class="mono">—</td></tr>
+            <tr><td><b>Accounts Payable</b></td><td>2001</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">42,10,000</td></tr>
+            <tr><td><b>Sales Revenue</b></td><td>4001</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">58,40,000</td></tr>
+            <tr><td><b>Purchase</b></td><td>5001</td><td class="mono" style="color:var(--rd)">44,20,000</td><td class="mono">—</td></tr>
+            <tr><td><b>Salaries & Wages</b></td><td>6001</td><td class="mono" style="color:var(--rd)">1,62,000</td><td class="mono">—</td></tr>
+            <tr><td><b>Expenses</b></td><td>6100</td><td class="mono" style="color:var(--rd)">4,28,000</td><td class="mono">—</td></tr>
+            <tr style="background:var(--acl);font-weight:700"><td><b>TOTAL</b></td><td></td><td class="mono" style="color:var(--rd)">1,12,40,300</td><td class="mono" style="color:var(--ac2)">1,00,50,000</td></tr>
+          </tbody></table></div>
+        </div>
+        <!-- BALANCE SHEET -->
+        <div class="acc-panel" id="acc-balance">
+          <div class="card"><div class="ch"><span class="ct">Balance Sheet — May 2026</span><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button></div><div class="cb">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div><div style="font-size:12px;font-weight:700;color:var(--ac);margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--ac)">ASSETS</div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Cash in Hand</span><span class="mono" style="font-size:12px">1,13,300</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Bank Balance</span><span class="mono" style="font-size:12px">8,57,000</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Accounts Receivable</span><span class="mono" style="font-size:12px">18,40,000</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Stock / Inventory</span><span class="mono" style="font-size:12px">34,20,000</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 0;font-weight:700;color:var(--ac)"><span>Total Assets</span><span class="mono">62,30,300</span></div>
+              </div>
+              <div><div style="font-size:12px;font-weight:700;color:var(--rd);margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--rd)">LIABILITIES & EQUITY</div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Accounts Payable</span><span class="mono" style="font-size:12px">42,10,000</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Owner Equity</span><span class="mono" style="font-size:12px">15,80,300</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px">Net Profit (MTD)</span><span class="mono" style="font-size:12px;color:var(--ac2)">4,40,000</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 0;font-weight:700;color:var(--rd)"><span>Total Liab. + Equity</span><span class="mono">62,30,300</span></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+        <!-- Generic panels for others -->
+        <div class="acc-panel" id="acc-sole2"><div class="card"><div class="ch"><span class="ct">Customer Recovery (SOLE-2)</span></div><div class="cb"><p style="color:var(--tx2)">SOLE-2 recovery form — same as SOLE with additional party tracking.</p></div></div></div>
+        <div class="acc-panel" id="acc-journal"><div class="card"><div class="ch"><span class="ct">Journal Entry</span><span class="badge bg-i">JV-0088</span></div><div class="cb">
+          <div class="fg3"><div class="f"><label>Date</label><input type="date" value="2026-05-07"></div><div class="f"><label>Ref No</label><input type="text" value="JV-0088" readonly class="mono"></div><div class="f"><label>Narration</label><input type="text" placeholder="Journal narration"></div></div>
+          <div class="ptw" style="margin-top:9px"><table class="pt"><thead><tr><th class="lft">A/C Head</th><th class="lft">Sub Head</th><th>Debit</th><th>Credit</th></tr></thead>
+          <tbody><tr><td class="lft"><input type="text" placeholder="Account head"></td><td class="lft"><input type="text" placeholder="Sub account"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td></tr></tbody></table></div>
+          <button class="arb" style="margin-top:7px"><i class="ti ti-plus" style="font-size:12px"></i> Add Line</button>
+          <div style="display:flex;gap:6px;margin-top:10px"><div class="sp"></div><button class="btn bp"><i class="ti ti-device-floppy"></i> Post Journal</button></div>
+        </div></div></div>
+        <div class="acc-panel" id="acc-ledger2"><div class="card"><div class="ch"><span class="ct">Ledger</span><button class="btn bo bsm" onclick="go('ledger',ni('ledger'))"><i class="ti ti-external-link"></i> Open Full Ledger</button></div><div class="cb"><p style="color:var(--tx2);font-size:12px">Full ledger aur transactions — sidebar Ledger/Cashbook link se khoolo ya upar button se.</p></div></div></div>
+        <div class="acc-panel" id="acc-ledger2b"><div class="card"><div class="ch"><span class="ct">Ledger-2 (Summary)</span></div><div class="cb"><p style="color:var(--tx2);font-size:12px">Ledger-2 summary view — all account balances at a glance.</p></div></div></div>
+        <div class="acc-panel" id="acc-income-final"><div class="card"><div class="ch"><span class="ct">Income Statement — Final</span><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></div><div class="cb">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:13px;font-weight:600">Total Sales</span><span class="mono" style="color:var(--ac2)">58,40,000</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:13px">Less: Purchase</span><span class="mono" style="color:var(--rd)">44,20,000</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr);font-weight:600"><span>Gross Profit</span><span class="mono" style="color:var(--ac2)">14,20,000</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:13px">Less: Salaries</span><span class="mono" style="color:var(--rd)">1,62,000</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:13px">Less: Expenses</span><span class="mono" style="color:var(--rd)">4,28,000</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700;font-size:14px"><span>Net Profit</span><span class="mono" style="color:var(--ac)">8,30,000</span></div>
+        </div></div></div>
+        <div class="acc-panel" id="acc-income-gen"><div class="card"><div class="ch"><span class="ct">Income Statement — General</span></div><div class="cb"><p style="color:var(--tx2);font-size:12px">General income statement with all categories.</p></div></div></div>
+        <div class="acc-panel" id="acc-income-noexp"><div class="card"><div class="ch"><span class="ct">Income Statement (without Expenses)</span></div><div class="cb"><p style="color:var(--tx2);font-size:12px">Gross profit only — without expense deductions.</p></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RECOVERY ========== -->
+  <div class="page" id="page-recovery">
+    <div class="qbar"><button class="btn bp" onclick="go('accounts',ni('accounts'));showAcc('sole',document.querySelector('.acc-menu-item:nth-child(3)'))"><i class="ti ti-plus"></i> New Recovery</button><button class="btn bo" onclick="showPrint()"><i class="ti ti-printer"></i> Print Recovery List</button></div>
+    <div class="sg3"><div class="sc s-c"><div class="scl">Total Pending</div><div class="scv">8,32,000</div></div><div class="sc s-d"><div class="scl">Overdue 30+ Days</div><div class="scv">2,14,500</div></div><div class="sc s-d"><div class="scl">Overdue 60+ Days</div><div class="scv">87,000</div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Bill-wise Pending Recovery</span><div style="display:flex;gap:6px"><select style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px"><option>All Salesmen</option><option>ARMAAN</option><option>IRFAN</option><option>MUMTAZ</option><option>RAFIQUE</option></select><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button></div></div>
+    <table class="dt"><thead><tr><th>Date</th><th>Invoice #</th><th>Customer</th><th>Salesman</th><th>Invoice Amt</th><th>Received</th><th>Balance</th><th>Days</th><th>Action</th></tr></thead><tbody>
+      <tr><td>01 Apr</td><td class="mono" style="color:var(--ac)">INV-0801</td><td>Raza Traders</td><td>RAFIQUE</td><td class="mono">72,000</td><td class="mono" style="color:var(--ac2)">0</td><td class="mono" style="color:var(--rd)">72,000</td><td><span class="badge bg-d">36 days</span></td><td><button class="btn bp bsm" onclick="document.getElementById('m-recover').classList.add('open')">Recover</button></td></tr>
+      <tr><td>10 Apr</td><td class="mono" style="color:var(--ac)">INV-0820</td><td>Al-Falah Dist.</td><td>ARMAAN</td><td class="mono">1,24,500</td><td class="mono" style="color:var(--ac2)">50,000</td><td class="mono" style="color:var(--rd)">74,500</td><td><span class="badge bg-w">27 days</span></td><td><button class="btn bp bsm" onclick="document.getElementById('m-recover').classList.add('open')">Recover</button></td></tr>
+      <tr><td>01 May</td><td class="mono" style="color:var(--ac)">INV-0870</td><td>Hajj Medical</td><td>ARMAAN</td><td class="mono">32,400</td><td class="mono" style="color:var(--ac2)">20,000</td><td class="mono" style="color:var(--am)">12,400</td><td><span class="badge bg-i">6 days</span></td><td><button class="btn bp bsm" onclick="document.getElementById('m-recover').classList.add('open')">Recover</button></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== EXPENSES ========== -->
+  <div class="page" id="page-expenses">
+    <div class="qbar"><button class="btn bp" onclick="document.getElementById('m-exp').classList.add('open')"><i class="ti ti-plus"></i> Add Expense</button><button class="btn bo" onclick="showPrint()"><i class="ti ti-printer"></i> Print Expense Report</button></div>
+    <div class="sg"><div class="sc s-d"><div class="scl">Today</div><div class="scv">24,800</div></div><div class="sc s-c"><div class="scl">This Week</div><div class="scv">1,12,400</div></div><div class="sc s-b"><div class="scl">This Month</div><div class="scv">4,28,000</div></div><div class="sc s-a"><div class="scl">Biggest Category</div><div class="scv" style="font-size:15px">Salary</div></div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;border-top:3px solid var(--rd)"><div style="font-size:11px;color:var(--tx2);margin-bottom:4px">🚛 Transport / Fuel</div><div class="mono" style="font-size:18px;font-weight:700">42,500</div></div>
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;border-top:3px solid var(--am)"><div style="font-size:11px;color:var(--tx2);margin-bottom:4px">💡 Utilities / Bijli</div><div class="mono" style="font-size:18px;font-weight:700">28,200</div></div>
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;border-top:3px solid var(--bl)"><div style="font-size:11px;color:var(--tx2);margin-bottom:4px">🏢 Rent / Godown</div><div class="mono" style="font-size:18px;font-weight:700">35,000</div></div>
+      <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;border-top:3px solid #7C3AED"><div style="font-size:11px;color:var(--tx2);margin-bottom:4px">📦 Misc / Other</div><div class="mono" style="font-size:18px;font-weight:700">14,300</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">Expense Entries</span><div style="display:flex;gap:6px"><select style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px"><option>All Categories</option><option>Transport</option><option>Utilities</option><option>Rent</option><option>Salary</option><option>Office</option><option>Repair</option></select><input type="date" value="2026-05-07" style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;outline:none"><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i></button></div></div>
+    <table class="dt"><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Paid To</th><th>Method</th><th>Amount</th><th>Added By</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>07 May</td><td><span class="badge bg-w">Transport</span></td><td>Delivery fuel — Route 3</td><td>PSO Pump</td><td>Cash</td><td class="mono" style="color:var(--rd)">3,500</td><td>Admin</td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+      <tr><td>07 May</td><td><span class="badge bg-d">Utilities</span></td><td>HESCO electricity May</td><td>HESCO</td><td>Bank</td><td class="mono" style="color:var(--rd)">8,200</td><td>Admin</td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+      <tr><td>07 May</td><td><span class="badge bg-s">Salary</span></td><td>ARMAAN — salary advance</td><td>ARMAAN</td><td>Cash</td><td class="mono" style="color:var(--rd)">12,000</td><td>Admin</td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+      <tr><td>06 May</td><td><span class="badge bg-p">Rent</span></td><td>Godown rent May 2026</td><td>Landlord</td><td>Bank</td><td class="mono" style="color:var(--rd)">35,000</td><td>Admin</td><td style="display:flex;gap:3px"><button class="btn bo bsm"><i class="ti ti-edit"></i></button><button class="btn br bsm"><i class="ti ti-trash"></i></button></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== SALARY ========== -->
+  <div class="page" id="page-salary">
+    <div class="qbar"><button class="btn bp" onclick="document.getElementById('m-advsalary').classList.add('open')"><i class="ti ti-wallet"></i> Give Advance</button><select style="padding:6px 10px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px"><option>May 2026</option><option>April 2026</option><option>March 2026</option></select><button class="btn bo" onclick="showPrint()"><i class="ti ti-printer"></i> Print Salary Sheet</button></div>
+    <div class="sg"><div class="sc s-a"><div class="scl">Total Staff</div><div class="scv">8</div></div><div class="sc s-d"><div class="scl">Monthly Bill</div><div class="scv">1,62,000</div></div><div class="sc s-c"><div class="scl">Advances</div><div class="scv">28,000</div></div><div class="sc s-b"><div class="scl">Net Payable</div><div class="scv">1,34,000</div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Salary Sheet — May 2026</span></div>
+    <table class="dt"><thead><tr><th>Emp #</th><th>Name</th><th>Designation</th><th>Basic</th><th>Allowance</th><th>Gross</th><th>Advance</th><th>Deduction</th><th>Net Salary</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      <tr><td>E-01</td><td><b>ARMAAN</b></td><td>Salesman</td><td class="mono">22,000</td><td class="mono">5,000</td><td class="mono">27,000</td><td class="mono" style="color:var(--rd)">12,000</td><td class="mono">0</td><td class="mono" style="color:var(--ac2);font-weight:700">15,000</td><td><span class="badge bg-w">Pending</span></td><td><button class="btn bp bsm" onclick="alert('Salary PKR 15,000 paid to ARMAAN!')">Pay</button></td></tr>
+      <tr><td>E-02</td><td><b>MUMTAZ ABBASI</b></td><td>Salesman</td><td class="mono">20,000</td><td class="mono">5,000</td><td class="mono">25,000</td><td class="mono" style="color:var(--rd)">0</td><td class="mono">0</td><td class="mono" style="color:var(--ac2);font-weight:700">25,000</td><td><span class="badge bg-w">Pending</span></td><td><button class="btn bp bsm" onclick="alert('Salary PKR 25,000 paid to MUMTAZ!')">Pay</button></td></tr>
+      <tr><td>E-03</td><td><b>IRFAN</b></td><td>Salesman</td><td class="mono">18,000</td><td class="mono">4,000</td><td class="mono">22,000</td><td class="mono" style="color:var(--rd)">8,000</td><td class="mono">0</td><td class="mono" style="color:var(--ac2);font-weight:700">14,000</td><td><span class="badge bg-s">Paid</span></td><td><button class="btn bo bsm">View</button></td></tr>
+      <tr><td>E-04</td><td><b>RAFIQUE</b></td><td>Salesman</td><td class="mono">18,000</td><td class="mono">4,000</td><td class="mono">22,000</td><td class="mono">0</td><td class="mono">0</td><td class="mono" style="color:var(--ac2);font-weight:700">22,000</td><td><span class="badge bg-w">Pending</span></td><td><button class="btn bp bsm">Pay</button></td></tr>
+      <tr><td>E-05</td><td><b>KASHIF (Driver)</b></td><td>Driver</td><td class="mono">16,000</td><td class="mono">3,000</td><td class="mono">19,000</td><td class="mono" style="color:var(--rd)">5,000</td><td class="mono">0</td><td class="mono" style="color:var(--ac2);font-weight:700">14,000</td><td><span class="badge bg-s">Paid</span></td><td><button class="btn bo bsm">View</button></td></tr>
+      <tr style="background:var(--sur2)"><td colspan="3"><b>TOTAL</b></td><td class="mono"><b>94,000</b></td><td class="mono"><b>21,000</b></td><td class="mono"><b>1,15,000</b></td><td class="mono" style="color:var(--rd)"><b>25,000</b></td><td class="mono"><b>0</b></td><td class="mono" style="color:var(--ac2)"><b>90,000</b></td><td colspan="2"></td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== LEDGER ========== -->
+  <div class="page" id="page-ledger">
+    <div class="ptabs"><div class="ptab active">Ledger</div><div class="ptab">Cashbook</div><div class="ptab">Bank Book</div><div class="ptab">Journal</div></div>
+    <div class="card" style="margin-bottom:11px"><div class="ch"><span class="ct">Account Ledger</span><div style="display:flex;gap:6px"><input type="text" placeholder="Customer/Account..." style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;width:160px;outline:none"><input type="date" value="2026-04-01" style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;outline:none"><input type="date" value="2026-05-07" style="padding:5px 9px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;outline:none"><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button></div></div></div>
+    <div class="card"><table class="dt"><thead><tr><th>Date</th><th>Description</th><th>Ref #</th><th style="color:var(--rd)">Debit (PKR)</th><th style="color:var(--ac2)">Credit (PKR)</th><th>Balance</th></tr></thead>
+    <tbody>
+      <tr><td>01 Apr</td><td>Opening Balance</td><td>—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">18,000 Dr</td></tr>
+      <tr><td>05 Apr</td><td>Sale Invoice</td><td class="mono" style="font-size:10.5px">INV-0835</td><td class="mono" style="color:var(--rd)">28,500</td><td class="mono">—</td><td class="mono">46,500 Dr</td></tr>
+      <tr><td>10 Apr</td><td>Cash Received</td><td class="mono" style="font-size:10.5px">CRV-0280</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">30,000</td><td class="mono">16,500 Dr</td></tr>
+      <tr><td>18 Apr</td><td>Sale Invoice</td><td class="mono" style="font-size:10.5px">INV-0851</td><td class="mono" style="color:var(--rd)">22,100</td><td class="mono">—</td><td class="mono">38,600 Dr</td></tr>
+      <tr><td>01 May</td><td>Sale Invoice</td><td class="mono" style="font-size:10.5px">INV-0870</td><td class="mono" style="color:var(--rd)">32,400</td><td class="mono">—</td><td class="mono">46,000 Dr</td></tr>
+      <tr><td>05 May</td><td>Cash Received</td><td class="mono" style="font-size:10.5px">CRV-0330</td><td class="mono">—</td><td class="mono" style="color:var(--ac2)">20,000</td><td class="mono" style="font-weight:700;color:var(--rd)">26,000 Dr</td></tr>
+    </tbody></table>
+    <div style="padding:9px 14px;background:var(--sur2);border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:24px">
+      <span style="font-size:12px;color:var(--tx2)">Total Debit: <span class="mono" style="color:var(--rd);font-weight:700">83,000</span></span>
+      <span style="font-size:12px;color:var(--tx2)">Total Credit: <span class="mono" style="color:var(--ac2);font-weight:700">50,000</span></span>
+      <span style="font-size:12px;color:var(--tx2)">Balance: <span class="mono" style="color:var(--rd);font-weight:700">26,000 Dr</span></span>
+    </div></div>
+  </div>
+
+  <!-- ========== REPORTS ========== -->
+  <div class="page" id="page-reports">
+    <div class="pbar">
+      <span style="font-size:11.5px;color:var(--tx2);font-weight:700;margin-right:3px">Period:</span>
+      <button class="pbtn active" onclick="setRep(this,'daily')">Daily</button>
+      <button class="pbtn" onclick="setRep(this,'weekly')">Weekly</button>
+      <button class="pbtn" onclick="setRep(this,'monthly')">Monthly</button>
+      <input type="date" value="2026-05-07" style="padding:4px 8px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:11.5px;outline:none;margin-left:8px">
+      <span style="font-size:10.5px;color:var(--tx3);margin:0 3px">to</span>
+      <input type="date" value="2026-05-07" style="padding:4px 8px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:11.5px;outline:none">
+      <button class="pprint" onclick="showPrint()"><i class="ti ti-printer"></i> Print Report</button>
+    </div>
+    <div class="sg">
+      <div class="sc s-a"><div class="scl">Total Sales</div><div class="scv" id="r-s">2,47,500</div><div class="scs" id="r-ss">Today — 23 invoices</div></div>
+      <div class="sc s-d"><div class="scl">Total Expenses</div><div class="scv" id="r-e">24,800</div><div class="scs" id="r-es">7 entries today</div></div>
+      <div class="sc s-b"><div class="scl">Recovery</div><div class="scv" id="r-r">87,000</div><div class="scs" id="r-rs">Cash received today</div></div>
+      <div class="sc s-c"><div class="scl">Net Profit (Est.)</div><div class="scv" id="r-p">1,02,700</div><div class="scs" id="r-ps">Sales−Purchase−Exp</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+      <div class="card" style="cursor:pointer" onclick="showPrint()" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"  style="transition:transform .15s"><div class="cb" style="text-align:center"><div style="width:38px;height:38px;border-radius:9px;background:var(--acl);display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><i class="ti ti-chart-bar" style="font-size:19px;color:var(--ac)"></i></div><div style="font-size:13px;font-weight:700;margin-bottom:2px">Sales Report</div><div style="font-size:11px;color:var(--tx2)">Daily/Weekly/Monthly</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showPrint()" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="cb" style="text-align:center"><div style="width:38px;height:38px;border-radius:9px;background:var(--bll);display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><i class="ti ti-user-star" style="font-size:19px;color:var(--bl)"></i></div><div style="font-size:13px;font-weight:700;margin-bottom:2px">Salesman Wise</div><div style="font-size:11px;color:var(--tx2)">Per salesman</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showPrint()" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="cb" style="text-align:center"><div style="width:38px;height:38px;border-radius:9px;background:var(--rdl);display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><i class="ti ti-receipt-off" style="font-size:19px;color:var(--rd)"></i></div><div style="font-size:13px;font-weight:700;margin-bottom:2px">Expense Report</div><div style="font-size:11px;color:var(--tx2)">Category wise</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showPrint()" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="cb" style="text-align:center"><div style="width:38px;height:38px;border-radius:9px;background:var(--aml);display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><i class="ti ti-clock-dollar" style="font-size:19px;color:var(--am)"></i></div><div style="font-size:13px;font-weight:700;margin-bottom:2px">Bill Pending</div><div style="font-size:11px;color:var(--tx2)">Overdue bills</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="go('accounts',ni('accounts'));showAcc('income-final',null)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="cb" style="text-align:center"><div style="width:38px;height:38px;border-radius:9px;background:var(--acl);display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><i class="ti ti-file-invoice" style="font-size:19px;color:var(--ac)"></i></div><div style="font-size:13px;font-weight:700;margin-bottom:2px">Income Statement</div><div style="font-size:11px;color:var(--tx2)">P&L account</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showPrint()" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="cb" style="text-align:center"><div style="width:38px;height:38px;border-radius:9px;background:var(--bll);display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><i class="ti ti-wallet" style="font-size:19px;color:var(--bl)"></i></div><div style="font-size:13px;font-weight:700;margin-bottom:2px">Salary Report</div><div style="font-size:11px;color:var(--tx2)">Monthly sheet</div></div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct" id="rep-title">Salesman Wise — Today (07 May 2026)</span><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Print</button></div>
+    <table class="dt"><thead><tr><th>Salesman</th><th>Invoices</th><th>Gross</th><th>Returns</th><th>Discount</th><th>Free</th><th>Net Sale</th></tr></thead>
+    <tbody>
+      <tr><td><b>ARMAAN</b></td><td>8</td><td class="mono">98,400</td><td class="mono" style="color:var(--rd)">0</td><td class="mono">1,200</td><td class="mono">2,400</td><td class="mono" style="color:var(--ac2);font-weight:700">97,200</td></tr>
+      <tr><td><b>MUMTAZ ABBASI</b></td><td>5</td><td class="mono">74,200</td><td class="mono" style="color:var(--rd)">0</td><td class="mono">800</td><td class="mono">1,800</td><td class="mono" style="color:var(--ac2);font-weight:700">73,400</td></tr>
+      <tr><td><b>IRFAN</b></td><td>6</td><td class="mono">42,150</td><td class="mono" style="color:var(--rd)">9,200</td><td class="mono">400</td><td class="mono">950</td><td class="mono" style="color:var(--ac2);font-weight:700">32,950</td></tr>
+      <tr><td><b>RAFIQUE</b></td><td>4</td><td class="mono">41,950</td><td class="mono" style="color:var(--rd)">0</td><td class="mono">500</td><td class="mono">0</td><td class="mono" style="color:var(--ac2);font-weight:700">41,450</td></tr>
+      <tr style="background:var(--acl)"><td><b>TOTAL</b></td><td><b>23</b></td><td class="mono"><b>2,56,700</b></td><td class="mono" style="color:var(--rd)"><b>9,200</b></td><td class="mono"><b>2,900</b></td><td class="mono"><b>5,150</b></td><td class="mono" style="color:var(--ac);font-weight:700">2,45,000</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- ========== ROLES ========== -->
+  <div class="page" id="page-roles">
+    <div class="qbar"><button class="btn bp" onclick="document.getElementById('m-adduser').classList.add('open')"><i class="ti ti-plus"></i> Add User</button></div>
+    <div class="card"><div class="ch"><span class="ct">Users & Permissions</span></div>
+    <table class="dt"><thead><tr><th>User</th><th>Role</th><th>Sales</th><th>Purchase</th><th>Accounts</th><th>Expenses</th><th>Salary</th><th>Reports</th><th>Settings</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      <tr><td><b>admin</b></td><td><span class="badge bg-d">Super Admin</span></td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td><span class="badge bg-s">Active</span></td><td><button class="btn bo bsm"><i class="ti ti-edit"></i></button></td></tr>
+      <tr><td><b>manager</b></td><td><span class="badge bg-i">Manager</span></td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--am)">~</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--rd)">✗</td><td><span class="badge bg-s">Active</span></td><td><button class="btn bo bsm"><i class="ti ti-edit"></i></button></td></tr>
+      <tr><td><b>accountant</b></td><td><span class="badge bg-w">Accountant</span></td><td class="c" style="color:var(--am)">~</td><td class="c" style="color:var(--am)">~</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--rd)">✗</td><td><span class="badge bg-s">Active</span></td><td><button class="btn bo bsm"><i class="ti ti-edit"></i></button></td></tr>
+      <tr><td><b>salesman</b></td><td><span class="badge bg-s">Salesman</span></td><td class="c" style="color:var(--ac2)">✓</td><td class="c" style="color:var(--rd)">✗</td><td class="c" style="color:var(--rd)">✗</td><td class="c" style="color:var(--rd)">✗</td><td class="c" style="color:var(--rd)">✗</td><td class="c" style="color:var(--am)">~</td><td class="c" style="color:var(--rd)">✗</td><td><span class="badge bg-s">Active</span></td><td><button class="btn bo bsm"><i class="ti ti-edit"></i></button></td></tr>
+    </tbody></table>
+    <div style="padding:9px 14px;background:var(--sur2);font-size:11px;color:var(--tx2);border-top:1px solid var(--bdr)">✓ Full Access &nbsp;|&nbsp; ~ Read Only &nbsp;|&nbsp; ✗ No Access</div></div>
+  </div>
+
+  </div><!-- /cnt -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ===== MODALS ===== -->
+
+<!-- PRINT INVOICE MODAL -->
+<div class="mbg" id="m-print">
+  <div class="modal modal-lg">
+    <div class="mh"><h3>🖨️ Invoice Print Preview</h3><div style="display:flex;gap:6px"><button class="btn bp bsm" onclick="window.print()"><i class="ti ti-printer"></i> Print Now</button><div class="mclose" onclick="closeM('m-print')">✕</div></div></div>
+    <div class="inv-print">
+      <div class="inv-head">
+        <div class="inv-company"><h2>AZAAN & BROTHERS</h2><p>Distribution Company, Hyderabad, Sindh<br>Ph: 0300-0000000 | NTN: 1234567-8</p></div>
+        <div class="inv-meta"><div class="inv-no">INV-0893</div><div style="font-size:12px;color:var(--tx2);margin-top:4px">Date: 07 May 2026</div><div style="font-size:12px;color:var(--tx2)">Type: Sale Invoice</div></div>
+      </div>
+      <div class="inv-info">
+        <div class="inv-info-block"><div class="lbl">Bill To</div><div style="font-size:13px;font-weight:600">Hajj Medical Store</div><div style="font-size:12px;color:var(--tx2)">Code: C-05</div></div>
+        <div class="inv-info-block"><div class="lbl">Salesman / Transport</div><div style="font-size:13px;font-weight:600">ARMAAN</div><div style="font-size:12px;color:var(--tx2)">Transport: Own Vehicle</div></div>
+      </div>
+      <table class="inv-table">
+        <thead><tr><th>#</th><th>Product Name</th><th>Ctn</th><th>Dzn</th><th>Pc</th><th>Price</th><th>Gross</th><th>Disc%</th><th>Net Amt</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Ariel Surf 500g</td><td>10</td><td>0</td><td>0</td><td class="mono">1,850</td><td class="mono">18,500</td><td>2%</td><td class="mono">18,130</td></tr>
+          <tr><td>2</td><td>Sunsilk Shampoo 200ml</td><td>5</td><td>0</td><td>6</td><td class="mono">950</td><td class="mono">5,270</td><td>0%</td><td class="mono">5,270</td></tr>
+        </tbody>
+      </table>
+      <div class="inv-totals">
+        <table>
+          <tr><td>Gross Total:</td><td class="mono" style="text-align:right">23,770</td></tr>
+          <tr><td>Discount:</td><td class="mono" style="text-align:right;color:var(--rd)">−370</td></tr>
+          <tr><td>Freight:</td><td class="mono" style="text-align:right">+500</td></tr>
+          <tr class="total-row"><td style="padding:7px 8px">Invoice Total:</td><td class="mono" style="text-align:right;padding:7px 8px">23,900</td></tr>
+          <tr><td style="color:var(--tx2)">Previous Balance:</td><td class="mono" style="text-align:right;color:var(--am)">32,000</td></tr>
+          <tr><td style="font-weight:700">NET AMOUNT DUE:</td><td class="mono" style="text-align:right;font-weight:700;color:var(--rd)">55,900</td></tr>
+        </table>
+      </div>
+      <div class="inv-footer">
+        <div><b>Received By:</b> ___________________</div>
+        <div><b>Salesman Signature:</b> ___________________</div>
+        <div><b>Prepared By:</b> Admin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="mbg" id="m-addprod">
+  <div class="modal">
+    <div class="mh"><h3>Add New Product</h3><div class="mclose" onclick="closeM('m-addprod')">✕</div></div>
+    <div class="fg"><div class="f"><label>Product Code</label><input type="text" placeholder="PRD-249" id="np-code"></div><div class="f"><label>Product Name</label><input type="text" placeholder="Product name..." id="np-name"></div></div>
+    <div class="fg"><div class="f"><label>Category</label><select><option>Detergent</option><option>Hair Care</option><option>Soap</option><option>Food</option><option>Other</option></select></div><div class="f"><label>Company / Brand</label><input type="text" placeholder="Unilever, P&G..."></div></div>
+    <div class="fg3">
+      <div class="f"><label>Sale Price (per Ctn)</label><input type="number" placeholder="0" class="mono"></div>
+      <div class="f"><label>Purchase Price</label><input type="number" placeholder="0" class="mono"></div>
+      <div class="f"><label>Min Stock Level</label><input type="number" placeholder="10"></div>
+    </div>
+    <div class="fg3" style="margin-top:9px">
+      <div class="f"><label>Opening Stock — Ctn</label><input type="number" placeholder="0" class="mono"></div>
+      <div class="f"><label>Opening Stock — Dzn</label><input type="number" placeholder="0" class="mono"></div>
+      <div class="f"><label>Opening Stock — Pc</label><input type="number" placeholder="0" class="mono"></div>
+    </div>
+    <div class="fg" style="margin-top:9px">
+      <div class="f"><label>Ctn Size (pieces)</label><input type="number" placeholder="12"></div>
+      <div class="f"><label>Barcode / SKU</label><input type="text" placeholder="Barcode (optional)"></div>
+    </div>
+    <div class="f" style="margin-top:9px"><label>Description / Notes</label><textarea style="padding:7px 10px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;resize:none;height:55px" placeholder="Optional notes..."></textarea></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-addprod')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="saveProd()"><i class="ti ti-device-floppy"></i> Save Product</button></div>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div class="mbg" id="m-editprod">
+  <div class="modal">
+    <div class="mh"><h3>Edit Product — <span id="ep-title">PRD-041</span></h3><div class="mclose" onclick="closeM('m-editprod')">✕</div></div>
+    <div class="fg"><div class="f"><label>Product Code</label><input type="text" id="ep-code" value="PRD-041" readonly></div><div class="f"><label>Product Name</label><input type="text" id="ep-name" value="Ariel Surf 500g"></div></div>
+    <div class="fg"><div class="f"><label>Category</label><select><option selected>Detergent</option><option>Hair Care</option><option>Soap</option></select></div><div class="f"><label>Company</label><input type="text" value="P&G"></div></div>
+    <div class="fg3"><div class="f"><label>Sale Price</label><input type="number" value="1950" class="mono"></div><div class="f"><label>Purchase Price</label><input type="number" value="1750" class="mono"></div><div class="f"><label>Min Level</label><input type="number" value="20"></div></div>
+    <div class="ab" style="margin-top:0"><button class="btn br" onclick="closeM('m-editprod')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="alert('Product updated!');closeM('m-editprod')"><i class="ti ti-device-floppy"></i> Update Product</button></div>
+  </div>
+</div>
+
+<!-- ADD EXPENSE MODAL -->
+<div class="mbg" id="m-exp">
+  <div class="modal">
+    <div class="mh"><h3>Add New Expense</h3><div class="mclose" onclick="closeM('m-exp')">✕</div></div>
+    <div class="fg3"><div class="f"><label>Date</label><input type="date" value="2026-05-07"></div><div class="f"><label>Category</label><select><option>Transport / Fuel</option><option>Utilities / Bijli</option><option>Rent / Godown</option><option>Salary / Wages</option><option>Office / Stationery</option><option>Repair / Maintenance</option><option>Loading / Unloading</option><option>Misc / Other</option></select></div><div class="f"><label>Amount (PKR)</label><input type="number" class="mono" placeholder="0"></div></div>
+    <div class="fg"><div class="f"><label>Description</label><input type="text" placeholder="Expense detail..."></div><div class="f"><label>Paid To</label><input type="text" placeholder="Person / Company name"></div></div>
+    <div class="fg"><div class="f"><label>Payment Method</label><select><option>Cash</option><option>Bank Transfer</option><option>Cheque</option></select></div><div class="f"><label>Reference / Bill #</label><input type="text" placeholder="Bill no"></div></div>
+    <div class="f" style="margin-top:9px"><label>Notes</label><textarea style="padding:7px 10px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;resize:none;height:50px" placeholder="Extra notes..."></textarea></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-exp')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="alert('Expense saved!');closeM('m-exp')"><i class="ti ti-device-floppy"></i> Save Expense</button></div>
+  </div>
+</div>
+
+<!-- ADD CUSTOMER MODAL -->
+<div class="mbg" id="m-addcust">
+  <div class="modal"><div class="mh"><h3>Add New Customer</h3><div class="mclose" onclick="closeM('m-addcust')">✕</div></div>
+    <div class="fg"><div class="f"><label>Customer Code</label><input type="text" placeholder="C-135"></div><div class="f"><label>Customer Name</label><input type="text" placeholder="Full name..."></div></div>
+    <div class="fg"><div class="f"><label>Contact / Phone</label><input type="text" placeholder="0300-0000000"></div><div class="f"><label>Area / City</label><input type="text" placeholder="Hyderabad"></div></div>
+    <div class="fg"><div class="f"><label>Salesman</label><select><option>ARMAAN</option><option>MUMTAZ</option><option>IRFAN</option><option>RAFIQUE</option></select></div><div class="f"><label>Customer Type</label><select><option>Non-Gift</option><option>Gift Customer</option></select></div></div>
+    <div class="fg"><div class="f"><label>Opening Balance (Dr)</label><input type="number" class="mono" placeholder="0"></div><div class="f"><label>Credit Limit</label><input type="number" class="mono" placeholder="0"></div></div>
+    <div class="f" style="margin-top:5px"><label>Address</label><textarea style="padding:7px 10px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;resize:none;height:50px" placeholder="Full address..."></textarea></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-addcust')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="alert('Customer saved!');closeM('m-addcust')"><i class="ti ti-device-floppy"></i> Save Customer</button></div>
+  </div>
+</div>
+
+<!-- ADD SUPPLIER -->
+<div class="mbg" id="m-addsup">
+  <div class="modal"><div class="mh"><h3>Add New Supplier</h3><div class="mclose" onclick="closeM('m-addsup')">✕</div></div>
+    <div class="fg"><div class="f"><label>Supplier Code</label><input type="text" placeholder="S-29"></div><div class="f"><label>Supplier Name</label><input type="text" placeholder="Company name..."></div></div>
+    <div class="fg"><div class="f"><label>Contact</label><input type="text" placeholder="021-00000000"></div><div class="f"><label>NTN / Tax No</label><input type="text" placeholder="NTN number"></div></div>
+    <div class="fg"><div class="f"><label>Opening Balance</label><input type="number" class="mono" placeholder="0"></div><div class="f"><label>Credit Days</label><input type="number" placeholder="30"></div></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-addsup')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="alert('Supplier saved!');closeM('m-addsup')"><i class="ti ti-device-floppy"></i> Save Supplier</button></div>
+  </div>
+</div>
+
+<!-- ADD SALESMAN -->
+<div class="mbg" id="m-addsm">
+  <div class="modal"><div class="mh"><h3>Add New Salesman</h3><div class="mclose" onclick="closeM('m-addsm')">✕</div></div>
+    <div class="fg"><div class="f"><label>Code</label><input type="text" placeholder="SM-05"></div><div class="f"><label>Full Name</label><input type="text" placeholder="Salesman name"></div></div>
+    <div class="fg"><div class="f"><label>Phone</label><input type="text" placeholder="0300-0000000"></div><div class="f"><label>CNIC</label><input type="text" placeholder="42101-0000000-0"></div></div>
+    <div class="fg"><div class="f"><label>Basic Salary</label><input type="number" class="mono" placeholder="0"></div><div class="f"><label>Allowance</label><input type="number" class="mono" placeholder="0"></div></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-addsm')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="alert('Salesman added!');closeM('m-addsm')"><i class="ti ti-device-floppy"></i> Save</button></div>
+  </div>
+</div>
+
+<!-- ADVANCE SALARY MODAL -->
+<div class="mbg" id="m-advsalary">
+  <div class="modal modal-sm"><div class="mh"><h3>Give Advance / Loan</h3><div class="mclose" onclick="closeM('m-advsalary')">✕</div></div>
+    <div class="f" style="margin-bottom:9px"><label>Employee</label><select><option>ARMAAN</option><option>MUMTAZ ABBASI</option><option>IRFAN</option><option>RAFIQUE</option><option>KASHIF (Driver)</option><option>ALI (Loader)</option></select></div>
+    <div class="fg"><div class="f"><label>Amount (PKR)</label><input type="number" class="mono" placeholder="0"></div><div class="f"><label>Date</label><input type="date" value="2026-05-07"></div></div>
+    <div class="f"><label>Reason</label><input type="text" placeholder="Advance reason..."></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-advsalary')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="alert('Advance given!');closeM('m-advsalary')"><i class="ti ti-wallet"></i> Give Advance</button></div>
+  </div>
+</div>
+
+<!-- RECOVERY MODAL -->
+<div class="mbg" id="m-recover">
+  <div class="modal modal-sm"><div class="mh"><h3>Recover Payment</h3><div class="mclose" onclick="closeM('m-recover')">✕</div></div>
+    <div style="background:var(--aml);border-radius:var(--r);padding:10px 13px;margin-bottom:12px"><div style="font-size:10px;color:var(--am);font-weight:700;text-transform:uppercase">Outstanding Balance</div><div class="mono" style="font-size:20px;font-weight:700;color:var(--am)">72,000</div><div style="font-size:11px;color:var(--tx2);margin-top:2px">Raza Traders — INV-0801</div></div>
+    <div class="fg"><div class="f"><label>Amount to Receive</label><input type="number" class="mono" placeholder="0"></div><div class="f"><label>Date</label><input type="date" value="2026-05-07"></div></div>
+    <div class="f" style="margin-bottom:9px"><label>Payment Method</label><select><option>Cash</option><option>Cheque</option><option>Bank Transfer</option></select></div>
+    <div class="f"><label>Cheque / Ref #</label><input type="text" placeholder="Ref (if any)"></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-recover')">Cancel</button><div class="sp"></div><button class="btn bo bsm" onclick="showPrint()"><i class="ti ti-printer"></i> Receipt</button><button class="btn bp" onclick="alert('Recovery saved!');closeM('m-recover')"><i class="ti ti-device-floppy"></i> Post Recovery</button></div>
+  </div>
+</div>
+
+<!-- ADD USER -->
+<div class="mbg" id="m-adduser">
+  <div class="modal modal-sm"><div class="mh"><h3>Add New User</h3><div class="mclose" onclick="closeM('m-adduser')">✕</div></div>
+    <div class="f" style="margin-bottom:9px"><label>Username</label><input type="text" placeholder="username (lowercase)"></div>
+    <div class="f" style="margin-bottom:9px"><label>Full Name</label><input type="text" placeholder="Display name"></div>
+    <div class="f" style="margin-bottom:9px"><label>Password</label><input type="password" placeholder="Password"></div>
+    <div class="f"><label>Role</label><select><option>Super Admin</option><option>Manager</option><option>Accountant</option><option>Salesman</option></select></div>
+    <div class="ab" style="margin-top:0"><button class="btn bo" onclick="closeM('m-adduser')">Cancel</button><div class="sp"></div><button class="btn bp" onclick="alert('User added!');closeM('m-adduser')"><i class="ti ti-device-floppy"></i> Add User</button></div>
+  </div>
+</div>
+
+<!-- PURCH PRINT -->
+<div class="mbg" id="m-pprint">
+  <div class="modal modal-lg">
+    <div class="mh"><h3>🖨️ Purchase Invoice Print</h3><div style="display:flex;gap:6px"><button class="btn bp bsm" onclick="window.print()"><i class="ti ti-printer"></i> Print</button><div class="mclose" onclick="closeM('m-pprint')">✕</div></div></div>
+    <div class="inv-print">
+      <div class="inv-head">
+        <div class="inv-company"><h2>AZAAN & BROTHERS</h2><p>Purchase Invoice — Distribution Company, Hyderabad</p></div>
+        <div class="inv-meta"><div class="inv-no" style="color:var(--bl)">PUR-262</div><div style="font-size:12px;color:var(--tx2);margin-top:4px">Date: 07 May 2026</div></div>
+      </div>
+      <div class="inv-info">
+        <div class="inv-info-block"><div class="lbl">Supplier</div><div style="font-size:13px;font-weight:600">Unilever Pakistan</div></div>
+        <div class="inv-info-block"><div class="lbl">Transport / Bilty</div><div style="font-size:13px;font-weight:600">Own Vehicle</div></div>
+      </div>
+      <table class="inv-table"><thead><tr><th>#</th><th>Product</th><th>Qty Ctn</th><th>Price</th><th>Gross</th><th>Disc</th><th>Net</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Ariel Surf 500g</td><td>50</td><td class="mono">1,750</td><td class="mono">87,500</td><td class="mono" style="color:var(--rd)">2,625</td><td class="mono">84,875</td></tr>
+        <tr><td>2</td><td>Dettol Soap 75g</td><td>30</td><td class="mono">850</td><td class="mono">25,500</td><td class="mono" style="color:var(--rd)">510</td><td class="mono">24,990</td></tr>
+      </tbody></table>
+      <div class="inv-totals"><table>
+        <tr><td>Gross:</td><td class="mono" style="text-align:right">1,13,000</td></tr>
+        <tr><td>Discount:</td><td class="mono" style="text-align:right;color:var(--rd)">−3,135</td></tr>
+        <tr class="total-row"><td style="padding:7px 8px">Net Total:</td><td class="mono" style="text-align:right;padding:7px 8px">1,09,865</td></tr>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
